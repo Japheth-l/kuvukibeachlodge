@@ -31,4 +31,10 @@ The "October/November Getaway Deals" bar is the `#promo` block at the top of `in
 
 ## Deploy
 
-Any static host works: GitHub Pages (Settings → Pages → deploy from branch), Netlify or Vercel.
+The site is live on GitHub Pages: https://japheth-l.github.io/kuvukibeachlodge/
+
+Pages serves the `gh-pages` branch. To publish changes, push them to that branch:
+
+```sh
+git push origin HEAD:gh-pages
+```
