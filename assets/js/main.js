@@ -86,6 +86,24 @@ if (slides.length > 1 && !reduceMotion) {
   }, 6000);
 }
 
+// On portrait screens (phones), the vertical suite tour plays behind the hero.
+const heroVideo = $(".hero-video");
+const portrait = window.matchMedia("(orientation: portrait) and (max-width: 860px)");
+const syncHeroVideo = () => {
+  const use = portrait.matches && !reduceMotion;
+  heroVideo.closest(".hero").classList.toggle("has-video", use);
+  if (use) {
+    if (!heroVideo.currentSrc) {
+      heroVideo.canPlayType("video/webm") ? (heroVideo.src = heroVideo.dataset.webm) : (heroVideo.src = heroVideo.dataset.mp4);
+    }
+    heroVideo.play().catch(() => {});
+  } else {
+    heroVideo.pause();
+  }
+};
+portrait.addEventListener("change", syncHeroVideo);
+syncHeroVideo();
+
 /* ---------- Reveal on scroll ---------- */
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -167,6 +185,31 @@ tabs.forEach((tab, i) => {
     next.focus();
   });
 });
+
+/* ---------- Video tour viewer ---------- */
+const videoModal = $("#video-modal");
+const tourVideo = $("#tour-video");
+const openTour = (btn) => {
+  lastFocus = document.activeElement;
+  const base = `assets/video/${btn.dataset.tour}`;
+  tourVideo.src = tourVideo.canPlayType("video/webm") ? `${base}.webm` : `${base}.mp4`;
+  tourVideo.setAttribute("aria-label", btn.dataset.title);
+  videoModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  tourVideo.play().catch(() => {});
+  $(".lb-close", videoModal).focus();
+};
+const closeTour = () => {
+  tourVideo.pause();
+  tourVideo.removeAttribute("src");
+  tourVideo.load();
+  videoModal.hidden = true;
+  document.body.style.overflow = "";
+  lastFocus?.focus();
+};
+$$(".tour-btn").forEach((b) => b.addEventListener("click", () => openTour(b)));
+$(".lb-close", videoModal).addEventListener("click", closeTour);
+videoModal.addEventListener("click", (e) => { if (e.target === videoModal) closeTour(); });
 
 /* ---------- Gallery filter & lightbox ---------- */
 const items = $$(".g-item");
@@ -392,7 +435,8 @@ modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }
 /* ---------- Global keyboard ---------- */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    if (!lb.hidden) closeLb();
+    if (!videoModal.hidden) closeTour();
+    else if (!lb.hidden) closeLb();
     else if (!modal.hidden) closeModal();
     else if (menu.classList.contains("is-open")) setMenu(false);
   }

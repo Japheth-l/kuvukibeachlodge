@@ -54,6 +54,8 @@
         <div class="hero-slide" style="background-image:url('assets/img/suite-heart-arch.jpg')"></div>
         <div class="hero-slide" style="background-image:url('assets/img/suite-bath-tv.jpg')"></div>
       </div>
+      <video class="hero-video" muted loop playsinline preload="none" poster="assets/img/ocean-suite-tour.jpg" aria-hidden="true"
+             data-webm="assets/video/ocean-suite-tour.webm" data-mp4="assets/video/ocean-suite-tour.mp4"></video>
       <div class="hero-overlay"></div>
       <div class="hero-content container">
         <p class="eyebrow">Langma Village · West of Kokrobite, Ghana</p>
@@ -104,6 +106,7 @@
         <div class="suite-tabs reveal" role="tablist" aria-label="Suites">
           <button role="tab" aria-selected="true" aria-controls="suite-ocean" id="tab-ocean">Ocean View Suite</button>
           <button role="tab" aria-selected="false" aria-controls="suite-marble" id="tab-marble" tabindex="-1">Marble Suite</button>
+          <button role="tab" aria-selected="false" aria-controls="suite-balcony" id="tab-balcony" tabindex="-1">Balcony Room</button>
           <button role="tab" aria-selected="false" aria-controls="suite-classic" id="tab-classic" tabindex="-1">Classic Room</button>
         </div>
 
@@ -119,6 +122,7 @@
               <button class="carousel-btn prev" aria-label="Previous photo">‹</button>
               <button class="carousel-btn next" aria-label="Next photo">›</button>
               <div class="carousel-dots" aria-hidden="true"></div>
+              <button class="tour-btn" data-tour="ocean-suite-tour" data-title="Ocean View Suite tour">▶ Watch video tour</button>
             </div>
           </div>
           <div class="suite-info">
@@ -166,6 +170,31 @@
             <a href="#book" class="btn" data-suite="Marble Suite">Enquire about this suite</a>
           </div>
         </article>
+        <article class="suite reveal" role="tabpanel" id="suite-balcony" aria-labelledby="tab-balcony" hidden>
+          <div class="suite-media">
+            <div class="video-frame">
+              <video poster="assets/img/balcony-room.jpg" muted loop playsinline preload="none" aria-label="Video tour of the Balcony Room, ending on the balcony view of palm trees and the sea">
+                <source src="assets/video/balcony-room-tour.webm" type="video/webm">
+                <source src="assets/video/balcony-room-tour.mp4" type="video/mp4">
+              </video>
+              <button class="video-toggle" aria-label="Pause video">❚❚</button>
+            </div>
+          </div>
+          <div class="suite-info">
+            <h3>Balcony Room</h3>
+            <p class="price">Rates on request · Bed &amp; Breakfast</p>
+            <p>Step out onto your own balcony and look over the coconut palms to the sea. Inside, a wood-panelled ceiling, crisp white linen and a leather lounge chair make it an easy place to unwind.</p>
+            <ul class="features">
+              <li>Private balcony with palm &amp; sea views</li>
+              <li>Bed with crisp white linen</li>
+              <li>Leather lounge chair &amp; dining table</li>
+              <li>Wall-mounted TV &amp; wardrobe</li>
+              <li>Bedside lamps &amp; warm wood finishes</li>
+            </ul>
+            <a href="#book" class="btn" data-suite="Balcony Room">Enquire about this room</a>
+          </div>
+        </article>
+
         <article class="suite reveal" role="tabpanel" id="suite-classic" aria-labelledby="tab-classic" hidden>
           <div class="suite-media">
             <div class="video-frame">
@@ -256,6 +285,7 @@
           <button class="g-item tall" data-cat="bath"><img src="assets/img/room-vanity.jpg" alt="Vanity with backlit mirror" loading="lazy"></button>
           <button class="g-item" data-cat="bedroom"><img src="assets/img/suite-lounge.jpg" alt="Lounge sofa and plant" loading="lazy"></button>
           <button class="g-item tall" data-cat="bedroom"><img src="assets/img/room-bed.jpg" alt="Tufted bed between grey curtains" loading="lazy"></button>
+          <button class="g-item tall" data-cat="bedroom"><img src="assets/img/balcony-room.jpg" alt="Balcony view over coconut palms to the sea" loading="lazy"></button>
           <button class="g-item" data-cat="bedroom"><img src="assets/img/classic-room.jpg" alt="Classic Room with wooden floors and ceiling fan" loading="lazy"></button>
           <button class="g-item tall" data-cat="bedroom"><img src="assets/img/room-desk.jpg" alt="Desk, chairs and smart TV" loading="lazy"></button>
           <button class="g-item" data-cat="bedroom romance"><img src="assets/img/suite-sunset-bed.jpg" alt="Bed and floral arch at dusk" loading="lazy"></button>
@@ -305,6 +335,7 @@
             <select id="suite" name="suite">
               <option>Ocean View Suite</option>
               <option>Marble Suite</option>
+              <option>Balcony Room</option>
               <option>Classic Room</option>
               <option>No preference</option>
             </select>
@@ -421,6 +452,12 @@
       <figcaption id="lb-cap"></figcaption>
     </figure>
     <button class="lb-nav lb-next" aria-label="Next photo">›</button>
+  </div>
+
+  <!-- Video tour viewer -->
+  <div class="lightbox video-modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Video tour" hidden>
+    <button class="lb-close" aria-label="Close">×</button>
+    <video id="tour-video" controls playsinline></video>
   </div>
 
   <!-- Booking confirmation -->
