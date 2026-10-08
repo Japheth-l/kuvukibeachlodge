@@ -267,3 +267,17 @@ input.invalid { border-color: #c0392b; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Promo bar */
+.promo { position: relative; z-index: 60; background: var(--gold); color: #fff; text-align: center; font-size: .88rem; padding: 9px 44px; }
+.promo p { margin: 0; }
+.promo a { font-weight: 600; }
+.promo-close { position: absolute; right: 8px; top: 50%; translate: 0 -50%; background: none; border: 0; color: #fff; font-size: 1.4rem; width: 36px; height: 36px; cursor: pointer; }
+body.has-promo .site-header:not(.is-scrolled) { top: var(--promo-h, 0px); }
+.nav-call { white-space: nowrap; }
+@media (min-width: 861px) and (max-width: 1060px) { .nav-call { display: none; } }
+
+/* Room video */
+.video-frame { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 4.4; background: var(--sand-deep); }
+.video-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video-toggle { position: absolute; right: 12px; bottom: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.88); color: var(--ink); font-size: .8rem; cursor: pointer; }

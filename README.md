@@ -22,9 +22,12 @@ python3 -m http.server 8000
 
 Edit `CONFIG` at the top of `assets/js/main.js`:
 
-- `whatsapp`: the WhatsApp number in international format, digits only (e.g. `233201234567`). This adds a "Send on WhatsApp" button with the message already filled in.
-- `email`: adds a "Send by email" option.
-- `nightlyFrom`: the starting nightly rate used for estimates (default 2000 GHS).
+- `whatsapp`: the booking WhatsApp number (currently `233200418854`). Booking requests open in WhatsApp with the message already filled in.
+- `email`: optional; adds a "Send by email" option.
+- `rates`: the nightly price range for each room, used for the live estimate.
+- `packageFrom`: starting prices for packages (beach dinner / proposal: GHS 960).
+
+The "October/November Getaway Deals" bar is the `#promo` block at the top of `index.html`. Edit or delete it when the offer ends.
 
 ## Deploy
 

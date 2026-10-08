@@ -1,13 +1,18 @@
 /* Kuvuki Beach Lodge — site interactions */
 
-// Contact settings. Fill in WhatsApp (international format, digits only,
-// e.g. "233201234567") and/or email to add those options to the booking flow.
+// Contact settings. WhatsApp is in international format, digits only.
+// Add an email address to offer "Send by email" in the booking flow too.
 const CONFIG = {
-  whatsapp: "",
+  whatsapp: "233200418854",
   email: "",
   instagram: "kuvukibeachlodge",
-  nightlyFrom: 2000,
   currency: "GHS",
+  // Nightly rate range per room [min, max]; min === max means a single "from" price.
+  rates: {
+    "Ocean View Suite": [2000, 2000],
+    default: [1000, 2000],
+  },
+  packageFrom: { "Beach dinner / proposal": 960 },
 };
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -15,6 +20,22 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 $("#year").textContent = new Date().getFullYear();
+
+/* ---------- Promo bar ---------- */
+const promo = $("#promo");
+const syncPromo = () => {
+  const show = promo && !promo.hidden;
+  document.body.classList.toggle("has-promo", show);
+  document.body.style.setProperty("--promo-h", show ? `${promo.offsetHeight}px` : "0px");
+};
+try { if (localStorage.getItem("kuvuki-promo-dismissed") === "1") promo.hidden = true; } catch {}
+$(".promo-close", promo).addEventListener("click", () => {
+  promo.hidden = true;
+  try { localStorage.setItem("kuvuki-promo-dismissed", "1"); } catch {}
+  syncPromo();
+});
+window.addEventListener("resize", syncPromo);
+syncPromo();
 
 /* ---------- Header & navigation ---------- */
 const header = $(".site-header");
@@ -119,8 +140,24 @@ const selectTab = (tab) => {
     const panel = $(`#${t.getAttribute("aria-controls")}`);
     panel.hidden = !selected;
     if (selected) panel.classList.add("is-visible");
+    const video = $("video", panel);
+    if (video) selected && !reduceMotion ? video.play().catch(() => {}) : video.pause();
   });
 };
+
+/* ---------- Room video ---------- */
+$$(".video-frame").forEach((frame) => {
+  const video = $("video", frame);
+  const btn = $(".video-toggle", frame);
+  const sync = () => {
+    btn.textContent = video.paused ? "▶" : "❚❚";
+    btn.setAttribute("aria-label", video.paused ? "Play video" : "Pause video");
+  };
+  btn.addEventListener("click", () => (video.paused ? video.play() : video.pause()));
+  video.addEventListener("play", sync);
+  video.addEventListener("pause", sync);
+  sync();
+});
 tabs.forEach((tab, i) => {
   tab.addEventListener("click", () => selectTab(tab));
   tab.addEventListener("keydown", (e) => {
@@ -207,17 +244,26 @@ function updateEstimate() {
     estNote.textContent = "Select dates to see an estimate.";
     return;
   }
-  estValue.textContent = `from ${money(n * CONFIG.nightlyFrom)}`;
-  let note = `${n} night${n > 1 ? "s" : ""} × from ${money(CONFIG.nightlyFrom)}, breakfast included.`;
-  if (pkg() === "Proposal package") note += " Proposal setup priced on request.";
-  if (suiteSel.value === "Marble Suite") note += " Marble Suite rates confirmed on request.";
+  const [lo, hi] = CONFIG.rates[suiteSel.value] || CONFIG.rates.default;
+  const extra = CONFIG.packageFrom[pkg()] || 0;
+  const nightsLabel = `${n} night${n > 1 ? "s" : ""}`;
+  let note;
+  if (lo === hi) {
+    estValue.textContent = `from ${money(n * lo + extra)}`;
+    note = `${nightsLabel} × from ${money(lo)}, breakfast included.`;
+  } else {
+    estValue.textContent = `${money(n * lo + extra)} – ${(n * hi + extra).toLocaleString("en-GH")}`;
+    note = `${nightsLabel} at ${money(lo)}–${hi.toLocaleString("en-GH")} per night depending on the room, breakfast included.`;
+  }
+  if (extra) note += ` Includes beach dinner / proposal from ${money(extra)}.`;
+  else if (pkg() !== "None") note += ` ${pkg()} priced on request.`;
   estNote.textContent = note + " Final price confirmed by our team.";
 }
 
 checkin.addEventListener("change", () => {
   if (checkin.value) {
     checkout.min = addDays(checkin.value, 1);
-    if (!checkout.value || checkout.value <= checkin.value) checkout.value = addDays(checkin.value, pkg() === "Weekend reset" ? 2 : 1);
+    if (!checkout.value || checkout.value <= checkin.value) checkout.value = addDays(checkin.value, 1);
   }
   updateEstimate();
 });
